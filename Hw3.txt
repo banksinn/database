@@ -1,0 +1,19 @@
+1.1 แสดงรายชื่อและที่อยู่ลูกค้าที่อาศัยในจังหวัดกรุงเทพ('กท')
+SELECT Firstname, Lastname, Address, Province from Customer where Province='กท';
+1.2 แสดงหมายเลขสินค้าทั้งหมดที่สั่งโดย บุษบา พาเพลิน
+SELECT Firstname, Lastname, ProductCode from Customer C, CustOrder O, OrderProduct OP where C.CustomerID = O.CustomerID and O.OrderNo = OP.OrderNo and Firstname LIKE 'บุษบา' and Lastname LIKE 'พาเพลิน';
+1.3 แสดงชื่อสินค้าทั้งหมดที่สั่งโดย บุษบา พาเพลิน
+SELECT Firstname, Lastname, ProductName from Customer C, CustOrder O, OrderProduct OP, Product P where C.CustomerID = O.CustomerID and O.OrderNo = OP.OrderNo and OP.ProductCode = P.ProductCode and Firstname LIKE 'บุษบา' and Lastname LIKE 'พาเพลิน';
+1.4 แสดงเลขที่ใบสั่งสินค้าที่มีรายการสินค้ารวมมูลค่ามากกว่า 5000 บาท
+SELECT DISTINCT OrderNo, TotalAmount from CustOrder where TotalAmount>5000;
+1.5 แสดงรายชื่อลูกค้าทั้งหมดที่สั่งสินค้าประเภทอุปกรณ์กีฬา 'SPO'
+SELECT DISTINCT Firstname, Lastname, ProductType from Customer C, CustOrder O, OrderProduct OP, Product P where C.CustomerID = O.CustomerID and O.OrderNo = OP.OrderNo and OP.ProductCode = P.ProductCode and ProductType = 'SPO';
+1.6 แสดงหมายเลขใบสั่งซื้อ วันที่สั่ง หมายเลขลูกค้า ชื่อ นามสกุลลูกค้า ของใบสั่งซื้อในเดือนกันยายน 2562 ซึ่งสั่งโดยคนที่อยู่ในเมือง เชียงใหม่
+SELECT OrderNo, OrderDate, O.CustomerID, Firstname, Lastname from Customer C, CustOrder O where O.CustomerID = C.CustomerID and OrderDate LIKE '*/9/2562' and O.Province = 'ชม';
+1.7 แสดงจำนวนยอดสั่งซื้อเฉลี่ยของลูกค้าที่อาศัยอยู่ในจังหวัดกรุงเทพ ('กท') เรียงตามลำดับยอดสั่งซื้อเฉลี่ย
+SELECT DISTINCT AVG(TotalAmount) as AVGTotal, Province from CustOrder where Province LIKE 'กท' group by CustomerID,Province;
+1.8 แสดงรายชื่อสินค้าที่มียอดขายรวมมากกว่า 100000 บาท โดยเรียงตามลำดับยอดขายจากมากไปน้อย
+SELECT ProductName, SUM(Price_each*Quantity) as SumPrice from OrderProduct OP, Product P where OP.ProductCode = P.ProductCode group by OP.ProductCode, ProductName having SUM(Price_each*quantity)>100000;
+หมายเหตุ: อาจใช้ DISTINCT keyword ในส่วนของ Select เพื่อระบุว่าเราไม่ต้องการแถวข้อมูลที่มีค่าซ้ำกัน และใช้ ASC และ DESC keywords เพื่อจัดลำกับข้อมูล
+2. จากตัวอย่างที่ 22 เขียนคำสั่งสอบถามเพื่อค้นหาชื่อและนามสกุลของพนักงานที่เข้าทำงานก่อนหัวหน้า
+SELECT E1.Firstname, E1.Lastname, E1.Hire_date, E2.Firstname, E2.Lastname, E2.Hire_date from Employee E1, Employee E2 where E1.Supervisor = E2.ID and Year(E1.Hire_date) < Year(E2.Hire_date);
